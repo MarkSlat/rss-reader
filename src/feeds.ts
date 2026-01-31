@@ -5,8 +5,8 @@ export const FEEDS = [
     url: "http://feeds.bbci.co.uk/news/rss.xml",
   },
   {
-    name: "Reuters",
-    url: "http://feeds.reuters.com/reuters/topNews",
+    name: "Adventure Journal",
+    url: "https://www.adventure-journal.com/feed/",
   },
   {
     name: "RTE News",

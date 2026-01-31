@@ -19,7 +19,11 @@
             <a href="${article.link}" target="_blank">
               ${article.title}
             </a>
-            <small>(${article.source})</small>
+            <small>(${article.source})</small>>
+            <p>Published on: ${new Date(article.published).toLocaleString()}</p>
+            <p>By: ${article.creator || 'Unknown'}</p>
+            <div>${article.content || ''}</div>
+            <p>Categories: ${article.categories ? article.categories.join(', ') : 'None'}</p>
           `;
           list.appendChild(li);
         });
