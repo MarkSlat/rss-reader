@@ -2,7 +2,11 @@
 import Parser from "rss-parser";
 import { FEEDS } from "./feeds";
 
-const parser = new Parser();
+const parser = new Parser({
+  customFields: {
+    item: ['media:content', 'media:thumbnail']  // Added media:thumbnail as well
+  }
+});
 
 export type Article = {
   title: string;
@@ -13,6 +17,7 @@ export type Article = {
   creator?: string;
   content?: string;
   categories?: string[];
+  mediaURL?: string;
 };
 
 export async function fetchAllFeeds(): Promise<Article[]> {
@@ -23,6 +28,16 @@ export async function fetchAllFeeds(): Promise<Article[]> {
       const parsed = await parser.parseURL(feed.url);
 
       for (const item of parsed.items) {
+        let mediaURL: string | undefined;
+
+        if (item['media:thumbnail'] && item['media:thumbnail'].$ && item['media:thumbnail'].$.url) {
+          mediaURL = item['media:thumbnail'].$.url;
+        } 
+
+        else if (item['media:content'] && item['media:content'].$ && item['media:content'].$.url) {
+          mediaURL = item['media:content'].$.url;
+        }
+
         articles.push({
           title: item.title ?? "No title",
           link: item.link ?? "",
@@ -32,6 +47,7 @@ export async function fetchAllFeeds(): Promise<Article[]> {
           creator: item.creator ?? undefined,
           content: item.content ?? undefined,
           categories: item.categories ?? undefined,
+          mediaURL,
         });
       }
     } catch (err) {
@@ -47,3 +63,4 @@ export async function fetchAllFeeds(): Promise<Article[]> {
 
   return articles;
 }
+

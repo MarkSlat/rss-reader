@@ -5,6 +5,8 @@ import { setArticles, getArticles } from "./store";
 const server = Bun.serve({
     port: 3000,
 
+    development: true,
+
     async fetch(req) {
         const url = new URL(req.url);
 
