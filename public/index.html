@@ -1,33 +1,66 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8" />
-  <title>RSS Reader</title>
-</head>
-<body>
-  <h1>RSS Articles</h1>
-  <ul id="articles"></ul>
 
-  <script>
-    fetch("/api/articles")
-      .then(res => res.json())
-      .then(data => {
+<head>
+    <meta charset="UTF-8" />
+    <title>RSS Reader</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>RSS Articles</h1>
+        <button id="refreshBtn">Refresh feeds</button>
+        <ul id="articles"></ul>
+    </div>
+
+    <script>
         const list = document.getElementById("articles");
-        data.forEach(article => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-            <a href="${article.link}" target="_blank">
-              ${article.title}
-            </a>
-            <small>(${article.source})</small>>
-            <p>Published on: ${new Date(article.published).toLocaleString()}</p>
-            <p>By: ${article.creator || 'Unknown'}</p>
-            <div>${article.content || ''}</div>
-            <p>Categories: ${article.categories ? article.categories.join(', ') : 'None'}</p>
-          `;
-          list.appendChild(li);
+        const refreshBtn = document.getElementById("refreshBtn");
+
+        async function loadArticles() {
+            const res = await fetch("/api/articles");
+            const data = await res.json();
+
+            list.innerHTML = "";
+
+            data.forEach(article => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+          <a href="${article.link}" target="_blank">
+            ${article.title}
+          </a>
+          <small>(${article.source})</small>
+          <p>Published on: ${article.published
+                        ? new Date(article.published).toLocaleString()
+                        : "Unknown date"}</p>
+          <p>By: ${article.creator || "Unknown"}</p>
+          <div>${article.content || ""}</div>
+          <p>
+            Categories:
+            ${article.categories && article.categories.length
+                        ? article.categories.join(", ")
+                        : "None"}
+          </p>
+        `;
+                list.appendChild(li);
+            });
+        }
+
+        refreshBtn.addEventListener("click", async () => {
+            refreshBtn.disabled = true;
+            refreshBtn.textContent = "Refreshing...";
+
+            await fetch("/api/refresh", { method: "POST" });
+            await loadArticles();
+
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = "Refresh feeds";
         });
-      });
-  </script>
+
+        // Initial load
+        loadArticles();
+    </script>
 </body>
+
 </html>
