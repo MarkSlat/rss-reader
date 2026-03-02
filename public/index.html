@@ -52,15 +52,20 @@
                 groupedArticles[date].forEach(article => {
                     const li = document.createElement("li");
                     li.innerHTML = `
+                        <div class="news">
+                            <div>
                         <a href="${article.link}" target="_blank">
                             ${article.title}
                         </a>
-                        <small>(${article.source})</small>
-                        <p>Published on: ${article.published
+                        <p><i>Published on: ${article.published
                             ? new Date(article.published).toLocaleTimeString()
-                            : "Unknown date"}</p>
-                        <div>${article.content || ""}</div>
+                            : "Unknown date"} - ${article.source}</i></p>
+                        ${article.content || ""}
+                        </div>
+                        <div>
                         ${article.mediaURL ? `<img src="${article.mediaURL}" alt="Article Media" style="max-width: 200px; max-height: 200px;"/>` : ""}
+                        </div>
+                        </div>
                     `;
                     ul.appendChild(li);
                 });
