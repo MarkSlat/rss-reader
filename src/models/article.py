@@ -9,6 +9,6 @@ class Article:
     description: str
     published_date: datetime
     publisher: Publisher
-    vector: list[float] | None
+    embedding: list[float] | None
+    embedding_model: str | None
     image_url: str | None
-    

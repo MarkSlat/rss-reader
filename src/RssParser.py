@@ -1,18 +1,56 @@
 from datetime import datetime
+from email.utils import parsedate_to_datetime
 from typing import List
 
 import feedparser
 
-from models.article import Article
+from src.models.article import Article
 from src.models.publisher import Publisher
 
 def formated_date(date_str) -> datetime:
-    # Convert the date string to a datetime object
-    return datetime.datetime.strptime(date_str, "%a, %d %b %Y %H:%M:%S %Z")
+    try:
+        # ISO 8601
+        return datetime.fromisoformat(date_str)
+    except ValueError:
+        pass
+
+    try:
+        # RFC 2822 / RSS / email dates
+        return parsedate_to_datetime(date_str)
+    except (TypeError, ValueError):
+        raise ValueError(f"Unsupported date format: {date_str}")
 
 def get_image_from_entry(entry):
-    # Placeholder function for extracting image URL from feed entry
-    return getattr(entry, 'image', None)
+    # RSS media:content
+    for media in getattr(entry, "media_content", []):
+        url = media.get("url")
+        if url:
+            return url
+
+    # RSS media:thumbnail
+    for media in getattr(entry, "media_thumbnail", []):
+        url = media.get("url")
+        if url:
+            return url
+
+    # Atom/RSS image enclosures
+    for link in getattr(entry, "links", []):
+        href = link.get("href")
+        rel = link.get("rel", "")
+        typ = link.get("type", "")
+
+        if href and (
+            typ.startswith("image/")
+            or rel == "enclosure"
+        ):
+            return href
+
+    # Some feeds expose image directly
+    image = getattr(entry, "image", None)
+    if isinstance(image, dict):
+        return image.get("href") or image.get("url")
+
+    return None
 
 def get_articles_from_publisher(publisher: Publisher):
     feed = feedparser.parse(publisher.rss_url)
@@ -25,7 +63,8 @@ def get_articles_from_publisher(publisher: Publisher):
             description=entry.description,
             published_date=formated_date(entry.published),
             publisher=publisher,
-            vector=[],  # Placeholder for vector representation
+            embedding=[],  # Placeholder for vector representation
+            embedding_model=None,  # Placeholder for embedding model name
             image_url=get_image_from_entry(entry)
         )
         articles.append(article)
@@ -40,3 +79,10 @@ def get_articles_from_publishers(publishers: List[Publisher]):
         all_articles.extend(articles)
     
     return all_articles
+
+def order_articles_by_date(articles: List[Article]):
+    return sorted(articles, key=lambda x: x.published_date, reverse=True)
+
+
+def get_parsed_article_for_embedding(article: Article):
+    return f"Title: {article.title}. Description: {article.description}"
