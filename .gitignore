@@ -10,3 +10,6 @@ wheels/
 .venv
 
 feedDB.py
+
+# Models
+model_cache/

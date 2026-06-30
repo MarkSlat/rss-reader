@@ -1,7 +1,7 @@
 from src.clustering import cluster_articles
 from src.embeddings import set_embedding
 from src.publisherParser import set_favicon_from_url
-from src.rssParser import get_articles_from_publishers
+from src.RssParser import get_articles_from_publishers
 from src.models.feedDB import get_feeds
 from src.models.publisher import Publisher
 

@@ -52,6 +52,23 @@ def get_image_from_entry(entry):
 
     return None
 
+def get_description_from_entry(entry):
+    description = getattr(entry, "description", None)
+    if description:
+        return description
+
+    summary = getattr(entry, "summary", None)
+    if summary:
+        return summary
+
+    content_list = getattr(entry, "content", [])
+    if content_list and isinstance(content_list, list):
+        for content in content_list:
+            if isinstance(content, dict) and "value" in content:
+                return content["value"]
+
+    return None
+
 def get_articles_from_publisher(publisher: Publisher):
     feed = feedparser.parse(publisher.rss_url)
     
@@ -60,13 +77,17 @@ def get_articles_from_publisher(publisher: Publisher):
     for entry in feed.entries:
         article = Article(
             title=entry.title,
-            description=entry.description,
+            description=get_description_from_entry(entry),
             published_date=formated_date(entry.published),
             publisher=publisher,
             embedding=[],  # Placeholder for vector representation
             embedding_model=None,  # Placeholder for embedding model name
             image_url=get_image_from_entry(entry)
         )
+
+        if article.description is None:
+            continue  # Skip articles without a valid published date
+
         articles.append(article)
 
     return articles

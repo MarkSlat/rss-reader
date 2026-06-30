@@ -1,23 +1,18 @@
-from src.rssParser import get_parsed_article_for_embedding
+from sentence_transformers import SentenceTransformer
+
+from src.RssParser import get_parsed_article_for_embedding
 from src.models import article
 
 import requests
 
-EMBEDDING_URL = "http://localhost:11434"
+MODELS_DIR = "model_cache"
 
-def set_embedding(article: article, model: str = "qwen3-embedding:0.6b") -> article:
+def set_embedding(article: article, model: str = "all-mpnet-base-v2") -> article:
     text = get_parsed_article_for_embedding(article)
 
-    response = requests.post(
-    f"{EMBEDDING_URL}/api/embeddings",
-    json={
-        "model": model,
-        "prompt": text
-    }
-)
-    response.raise_for_status()
+    model = SentenceTransformer(model, cache_folder=MODELS_DIR)
 
-    embedding_data = response.json()
-    article.embedding = embedding_data["embedding"]
+    embedding_data = model.encode(text, convert_to_tensor=True)
+    article.embedding = embedding_data.tolist()
     article.embedding_model = model
     return article
