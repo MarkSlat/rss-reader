@@ -23,7 +23,7 @@ def median_datetime(dates: list[datetime]) -> datetime:
 
 
 def cluster_articles(
-    articles: list[Article], threshold: float = 0.5
+    articles: list[Article], threshold: float = 0.7
 ) -> list[Cluster]:
     clusters: list[Cluster] = []
 

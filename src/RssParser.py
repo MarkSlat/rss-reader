@@ -69,6 +69,17 @@ def get_description_from_entry(entry):
 
     return None
 
+def get_url_from_entry(entry):
+    url = getattr(entry, "link", None)
+    if url:
+        return url
+
+    guid = getattr(entry, "guid", None)
+    if guid:
+        return guid
+
+    return None
+
 def get_articles_from_publisher(publisher: Publisher):
     feed = feedparser.parse(publisher.rss_url)
     
@@ -76,6 +87,7 @@ def get_articles_from_publisher(publisher: Publisher):
     
     for entry in feed.entries:
         article = Article(
+            url=get_url_from_entry(entry),
             title=entry.title,
             description=get_description_from_entry(entry),
             published_date=formated_date(entry.published),

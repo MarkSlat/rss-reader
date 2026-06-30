@@ -5,6 +5,7 @@ from src.models.publisher import Publisher
 
 @dataclass
 class Article:
+    url: str
     title: str
     description: str
     published_date: datetime

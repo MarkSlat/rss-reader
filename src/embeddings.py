@@ -10,9 +10,9 @@ MODELS_DIR = "model_cache"
 def set_embedding(article: article, model: str = "all-mpnet-base-v2") -> article:
     text = get_parsed_article_for_embedding(article)
 
-    model = SentenceTransformer(model, cache_folder=MODELS_DIR)
+    transformerModel = SentenceTransformer(model, cache_folder=MODELS_DIR)
 
-    embedding_data = model.encode(text, convert_to_tensor=True)
+    embedding_data = transformerModel.encode(text, convert_to_tensor=True)
     article.embedding = embedding_data.tolist()
     article.embedding_model = model
     return article

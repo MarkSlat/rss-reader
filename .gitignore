@@ -13,3 +13,5 @@ feedDB.py
 
 # Models
 model_cache/
+
+news.db
