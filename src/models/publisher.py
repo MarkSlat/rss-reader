@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Publisher:
-    name: str | None
-    rss_url: str
-    favicon_url: str | None
+    id: int | None = None
+    name: str | None = None
+    rss_url: str = ""
+    favicon_url: str | None = None

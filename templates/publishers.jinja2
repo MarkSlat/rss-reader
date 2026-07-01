@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Publishers</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        input { margin: 2px; }
+        form { margin-bottom: 10px; }
+        .publisher-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Publishers</h1>
+
+<h2>Add New Publisher</h2>
+
+<form method="POST" action="/publishers/save">
+    <input type="hidden" name="id" />
+
+    <input name="name" placeholder="Name" required />
+    <input name="rss_url" placeholder="RSS URL" required />
+    <input name="favicon_url" placeholder="Favicon URL" />
+
+    <button type="submit">Add</button>
+</form>
+
+<hr>
+
+<h2>Existing Publishers</h2>
+
+{% for p in publishers %}
+<div class="publisher-card">
+
+    <form method="POST" action="/publishers/save">
+        <input type="hidden" name="id" value="{{ p.id }}">
+
+        <input name="name" value="{{ p.name }}" required>
+        <input name="rss_url" value="{{ p.rss_url }}" required>
+        <input name="favicon_url" value="{{ p.favicon_url }}">
+
+        <button type="submit">Update</button>
+    </form>
+
+    <form method="POST" action="/publishers/delete/{{ p.id }}">
+        <button type="submit">Delete</button>
+    </form>
+
+</div>
+{% endfor %}
+
+</body>
+</html>
