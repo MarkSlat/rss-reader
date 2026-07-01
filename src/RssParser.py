@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from typing import List
 
@@ -8,17 +8,32 @@ from src.models.article import Article
 from src.models.publisher import Publisher
 
 def formated_date(date_str) -> datetime:
+    if not date_str:
+        return datetime.now(timezone.utc)
+
     try:
-        # ISO 8601
-        return datetime.fromisoformat(date_str)
+        dt = datetime.fromisoformat(date_str)
+
+        # if naive → assume UTC
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+
+        return dt
+
     except ValueError:
         pass
 
     try:
-        # RFC 2822 / RSS / email dates
-        return parsedate_to_datetime(date_str)
+        dt = parsedate_to_datetime(date_str)
+
+        # parsedate_to_datetime may return naive → fix it
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+
+        return dt.astimezone(timezone.utc)
+
     except (TypeError, ValueError):
-        raise ValueError(f"Unsupported date format: {date_str}")
+        return datetime.now(timezone.utc)
 
 def get_image_from_entry(entry):
     # RSS media:content
