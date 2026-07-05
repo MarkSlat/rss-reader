@@ -10,7 +10,7 @@ from src.models.feedDB import get_feeds
 from src.db.articleRepository import ArticleRepository
 from src.db.publisherRepository import PublisherRepository
 from src.clustering import cluster_articles
-from src.embeddings import set_embedding
+from src.embeddings import set_embedding, set_embeddings
 
 app = Flask(__name__)
 
@@ -45,10 +45,9 @@ def refresh():
 
         cached = repo.bulk_get([a.url for a in articles])
 
-        new_count = 0
-        reused_count = 0
-
+        new_articles = []
         final_articles = []
+        reused_count = 0
 
         for article in articles:
             existing = cached.get(article.url)
@@ -58,17 +57,24 @@ def refresh():
                 article.embedding_model = existing.embedding_model
                 reused_count += 1
             else:
-                set_embedding(article)
-                repo.save(article)
-                new_count += 1
+                new_articles.append(article)
 
             final_articles.append(article)
 
-        return jsonify({
-            "total": len(final_articles),
-            "new_embeddings": new_count,
-            "cached_embeddings": reused_count,
-        })
+        # Generate embeddings in one batch
+        if new_articles:
+            set_embeddings(new_articles)
+
+            for article in new_articles:
+                repo.save(article)
+
+        return jsonify(
+            {
+                "total": len(final_articles),
+                "new_embeddings": len(new_articles),
+                "cached_embeddings": reused_count,
+            }
+        )
 
 @app.route("/")
 def index():
@@ -115,4 +121,4 @@ def delete_publisher(publisher_id):
     return redirect("/publishers")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
