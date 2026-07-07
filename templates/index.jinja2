@@ -1,195 +1,71 @@
-<html>
-<head>
-    <title>News Feed</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 900px;
-            margin: 2rem auto;
-            background: #f5f5f5;
-        }
+{% extends "layout.jinja2" %}
 
-        .cluster {
-            background: white;
-            border-radius: 10px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 6px rgba(0,0,0,.08);
-            overflow: hidden;
-        }
+{% block title %}
+The Daily Feed
+{% endblock %}
 
-        .lead {
-            padding: 18px;
-        }
-
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .favicon {
-            width: 20px;
-            height: 20px;
-            object-fit: contain;
-        }
-
-        .publisher {
-            color: #666;
-            font-size: .9rem;
-        }
-
-        .date {
-            margin-left: auto;
-            color: #999;
-            font-size: .85rem;
-        }
-
-        .content {
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-        }
-
-        .thumbnail {
-            width: 150px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
-            flex-shrink: 0;
-        }
-
-        .text {
-            flex: 1;
-        }
-
-        h2 {
-            margin: 0 0 8px;
-            font-size: 1.3rem;
-        }
-
-        p {
-            margin: 0;
-            color: #444;
-            line-height: 1.5;
-        }
-
-        .related {
-            border-top: 1px solid #eee;
-            background: #fafafa;
-        }
-
-        .related-item {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 12px 18px;
-            text-decoration: none;
-            color: inherit;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .related-item:first-child {
-            border-top: none;
-        }
-
-        .related-item:hover {
-            background: #f2f2f2;
-        }
-
-        .related-title {
-            font-weight: 500;
-        }
-
-        .related-meta {
-            color: #777;
-            font-size: .9rem;
-            white-space: nowrap;
-        }
-
-        .related-header {
-            padding: 12px 18px 6px;
-            font-size: .8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #888;
-        }
-    </style>
-</head>
-<body>
-
-<h1>News Feed</h1>
+{% block content %}
 
 {% for cluster in clusters %}
 
-{% set lead = cluster.articles[0] %}
+<section class="cluster">
 
-<div class="cluster">
+    <div class="cluster-grid">
 
-    <div class="lead">
+        {% for article in cluster.articles %}
 
-        <div class="header">
-            {% if lead.publisher.favicon_url %}
-            <img
-                class="favicon"
-                src="{{ lead.publisher.favicon_url }}"
-                alt="{{ lead.publisher.name }}">
+        <article class="story">
+
+            {% if article.image_url %}
+            <a href="{{ article.url }}" target="_blank">
+                <img
+                    class="story-image"
+                    src="{{ article.image_url }}"
+                    alt="{{ article.title }}">
+            </a>
             {% endif %}
 
-            <span class="publisher">
-                {{ lead.publisher.name }}
-            </span>
+            <h2 class="story-title">
+                <a href="{{ article.url }}" target="_blank">
+                    {{ article.title }}
+                </a>
+            </h2>
 
-            <span class="date">
-                {{ lead.published_date.strftime("%Y-%m-%d %H:%M") }}
-            </span>
-        </div>
-
-        <div class="content">
-
-            {% if lead.image_url %}
-            <img
-                class="thumbnail"
-                src="{{ lead.image_url }}"
-                alt="{{ lead.title }}">
+            {% if article.description %}
+            <p class="story-description">
+                {{ article.description }}
+            </p>
             {% endif %}
 
-            <div class="text">
-                <h2>{{ lead.title }}</h2>
-                <p>{{ lead.description }}</p>
+            <div class="story-footer">
+
+                <div class="publisher">
+
+                    {% if article.publisher.favicon_url %}
+                    <img
+                        class="favicon"
+                        src="{{ article.publisher.favicon_url }}"
+                        alt="{{ article.publisher.name }}">
+                    {% endif %}
+
+                    <span>{{ article.publisher.name }}</span>
+
+                </div>
+
+                <div class="published-date">
+                    {{ article.published_date.strftime("%d %b %Y") }}
+                </div>
+
             </div>
 
-        </div>
+        </article>
 
-    </div>
-
-    {% if cluster.articles|length > 1 %}
-    <div class="related">
-
-        <div class="related-header">
-            Other coverage
-        </div>
-
-        {% for article in cluster.articles[1:] %}
-        <div class="related-item">
-
-            <div class="related-title">
-                {{ article.title }}
-            </div>
-
-            <div class="related-meta">
-                {{ article.publisher.name }}
-            </div>
-
-        </div>
         {% endfor %}
 
     </div>
-    {% endif %}
 
-</div>
+</section>
 
 {% endfor %}
 
-</body>
-</html>
+{% endblock %}

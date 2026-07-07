@@ -1,0 +1,377 @@
+/* =========================================================
+   Global
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    background: #333333;
+
+    color: #111;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+}
+
+
+/* =========================================================
+   Newspaper sheet
+   ========================================================= */
+
+.newspaper {
+
+    width: min(1400px, 94%);
+
+    margin: 40px auto;
+
+    padding: 50px;
+
+    background: #f5f1e8;
+
+    border: 2px solid #111;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.55);
+
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   Masthead
+   ========================================================= */
+
+.masthead {
+
+    text-align: center;
+
+    margin-bottom: 40px;
+
+}
+
+
+.edition {
+
+    font-size: .8rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 3px;
+
+    color: #444;
+
+    margin-bottom: 20px;
+}
+
+
+.masthead h1 {
+
+    margin: 0;
+
+    font-size: clamp(3rem, 7vw, 5rem);
+
+    letter-spacing: 8px;
+
+    font-weight: 900;
+
+    line-height: 1;
+
+}
+
+
+.masthead-divider {
+
+    border-top: 5px double black;
+
+    margin: 25px 0 15px;
+
+}
+
+
+/* =========================================================
+   Navigation
+   ========================================================= */
+
+.navbar {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 40px;
+
+}
+
+
+.navbar a {
+
+    color: black;
+
+    text-decoration: none;
+
+    text-transform: uppercase;
+
+    font-size: .85rem;
+
+    letter-spacing: 2px;
+
+}
+
+
+.navbar a:hover {
+
+    text-decoration: underline;
+
+}
+
+
+/* =========================================================
+   Newspaper sections
+   ========================================================= */
+
+.cluster {
+
+    border-bottom: 3px double #111;
+
+    padding: 35px 0;
+
+}
+
+
+.cluster:first-child {
+
+    padding-top: 0;
+
+}
+
+
+.cluster-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(250px, 1fr));
+
+    gap: 0;
+
+}
+
+
+/* =========================================================
+   Article columns
+   ========================================================= */
+
+.story {
+
+    padding: 0 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-height: 350px;
+
+}
+
+
+.story:first-child {
+
+    padding-left: 0;
+
+}
+
+
+.story:last-child {
+
+    padding-right: 0;
+
+}
+
+
+/* vertical newspaper column lines */
+
+.story + .story {
+
+    border-left: 1px solid #777;
+
+}
+
+
+/* =========================================================
+   Images
+   ========================================================= */
+
+.story-image {
+
+    width: 100%;
+
+    height: 130px;
+
+    object-fit: cover;
+
+    margin-bottom: 15px;
+
+    border: 1px solid #777;
+
+    filter: grayscale(20%);
+
+}
+
+
+/* =========================================================
+   Headlines
+   ========================================================= */
+
+.story-title {
+
+    margin: 0 0 12px;
+
+    font-size: 1.5rem;
+
+    line-height: 1.15;
+
+}
+
+
+.story-title a {
+
+    color: black;
+
+    text-decoration: none;
+
+}
+
+
+.story-title a:hover {
+
+    text-decoration: underline;
+
+}
+
+
+/* =========================================================
+   Article text
+   ========================================================= */
+
+.story-description {
+
+    margin: 0;
+
+    font-size: 1rem;
+
+    line-height: 1.7;
+
+    text-align: justify;
+
+}
+
+
+/* =========================================================
+   Footer / publisher
+   ========================================================= */
+
+.story-footer {
+
+    margin-top: auto;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #999;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: .8rem;
+
+    color: #555;
+
+}
+
+
+.publisher {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.favicon {
+
+    width: 16px;
+
+    height: 16px;
+
+    object-fit: contain;
+
+}
+
+
+.published-date {
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================================
+   Mobile
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+
+    .newspaper {
+
+        width: 100%;
+
+        margin: 0;
+
+        padding: 25px;
+
+        border: none;
+
+    }
+
+
+    .navbar {
+
+        flex-direction: column;
+
+        gap: 15px;
+
+    }
+
+
+    .story {
+
+        padding: 25px 0;
+
+    }
+
+
+    .story + .story {
+
+        border-left: none;
+
+        border-top: 1px solid #777;
+
+    }
+
+
+}
